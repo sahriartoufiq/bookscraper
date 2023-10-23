@@ -1,4 +1,5 @@
 import scrapy
+from bookscraper.items import BookItem
 
 
 class BookspiderSpider(scrapy.Spider):
@@ -24,10 +25,18 @@ class BookspiderSpider(scrapy.Spider):
 
     def parse_book_page(self, response):
 
-        rows = response.css('table tr')
+        row_data_list = response.css('table tr')
 
-        book_item = {
-            'upc': rows[0].css('td::text').get()
-        }
+        book = BookItem()
 
-        yield book_item
+        book['title'] = response.css('.product_main h1::text').get()
+        book['upc'] = self.getRowData(row_data_list, 0)
+        book['product_type'] = self.getRowData(row_data_list, 1)
+        book['price'] = self.getRowData(row_data_list, 3)
+        book['tax'] = self.getRowData(row_data_list, 4)
+        book['description'] = response.css('#product_description + p::text').get()
+
+        yield book
+
+    def getRowData(self, row_data_list, row_index):
+        return row_data_list[row_index].css('td::text').get()
