@@ -9,5 +9,11 @@ from itemadapter import ItemAdapter
 
 
 class BookscraperPipeline:
+
     def process_item(self, item, spider):
+
+        adapter = ItemAdapter(item)
+        value = adapter.get('product_type')
+        adapter['product_type'] = value.lower()
+
         return item

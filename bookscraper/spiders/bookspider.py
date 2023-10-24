@@ -22,7 +22,6 @@ class BookspiderSpider(scrapy.Spider):
         next_page_relative_url = response.css('li.next a ::attr(href)').get()
         next_page_url = self.get_catalogue_url(next_page_relative_url)
 
-
         yield response.follow(next_page_url, callback=self.parse)
 
     def parse_book_page(self, response):
@@ -42,10 +41,10 @@ class BookspiderSpider(scrapy.Spider):
 
     def getRowData(self, row_data_list, row_index):
         return row_data_list[row_index].css('td::text').get()
-    
+
     def get_catalogue_url(self, relative_url):
 
         if 'catalogue' in relative_url:
             return self.base_url + relative_url
-        
+
         return self.base_url + 'catalogue/' + relative_url
